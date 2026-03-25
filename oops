@@ -1,0 +1,174 @@
+
+● OOP Concepts in Python
+
+  1. Class & Object
+
+  class Dog:
+      def __init__(self, name, breed):
+          self.name = name
+          self.breed = breed
+
+      def bark(self):
+          return f"{self.name} says Woof!"
+
+  dog = Dog("Rex", "Labrador")  # Object
+  print(dog.bark())
+
+  2. Encapsulation
+
+  Bundling data + methods, restricting direct access via _ (protected) or __ (private).
+  class BankAccount:
+      def __init__(self, balance):
+          self.__balance = balance  # private
+
+      def deposit(self, amount):
+          self.__balance += amount
+
+      def get_balance(self):
+          return self.__balance
+
+  3. Inheritance
+
+  class Animal:
+      def speak(self):
+          return "Some sound"
+
+  class Cat(Animal):          # inherits Animal
+      def speak(self):        # overrides parent method
+          return "Meow"
+
+  class Kitten(Cat):          # multi-level inheritance
+      pass
+
+  4. Polymorphism
+
+  Same interface, different behavior.
+  class Shape:
+      def area(self): pass
+
+  class Circle(Shape):
+      def area(self): return 3.14 * 5 * 5
+
+  class Square(Shape):
+      def area(self): return 4 * 4
+
+  for shape in [Circle(), Square()]:
+      print(shape.area())     # each behaves differently
+
+  5. Abstraction
+
+  Hiding implementation details using ABC.
+  from abc import ABC, abstractmethod
+
+  class Vehicle(ABC):
+      @abstractmethod
+      def start(self):        # must be implemented by subclass
+          pass
+
+  class Car(Vehicle):
+      def start(self):
+          return "Car started"
+
+  6. Special (Dunder) Methods
+
+  class Vector:
+      def __init__(self, x, y):
+          self.x, self.y = x, y
+
+      def __add__(self, other):       # overloads +
+          return Vector(self.x + other.x, self.y + other.y)
+
+      def __repr__(self):             # string representation
+          return f"Vector({self.x}, {self.y})"
+
+  ---
+
+  ┌───────────────┬───────────────────────────┐
+  │    Concept    │          Purpose          │
+  ├───────────────┼───────────────────────────┤
+  │ Encapsulation │ Hide internal state       │
+  ├───────────────┼───────────────────────────┤
+  │ Inheritance   │ Reuse code from parent    │
+  ├───────────────┼───────────────────────────┤
+  │ Polymorphism  │ One interface, many forms │
+  ├───────────────┼───────────────────────────┤
+  │ Abstraction   │ Expose only essentials    │
+  └───────────────┴───────────────────────────┘
+
+  Want me to dive deeper into any specific concept?
+
+> explain class vs instance attributes in few sentences
+
+● Class attributes are shared across all instances — defined directly in the class body. Changing them affects every
+  object unless overridden.
+
+  Instance attributes belong to a specific object — defined in __init__ via self. Each object has its own copy.
+
+  class Dog:
+      species = "Canis lupus"      # class attribute — shared by all
+
+      def __init__(self, name):
+          self.name = name         # instance attribute — unique per object
+
+  d1 = Dog("Rex")
+  d2 = Dog("Buddy")
+
+  print(d1.species)   # "Canis lupus"
+  print(d2.species)   # "Canis lupus"
+  print(d1.name)      # "Rex"
+  print(d2.name)      # "Buddy"
+
+  Dog.species = "Wolf"
+  print(d1.species)   # "Wolf" — all instances affected
+
+> number guessing game in typescript
+
+● import * as readline from "readline";
+
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  function ask(question: string): Promise<string> {
+    return new Promise((resolve) => rl.question(question, resolve));
+  }
+
+  async function game(): Promise<void> {
+    const secret = Math.floor(Math.random() * 100) + 1;
+    const maxAttempts = 7;
+    let attempts = 0;
+
+    console.log("\n🎯 Guess the number between 1 and 100!");
+    console.log(`You have ${maxAttempts} attempts.\n`);
+
+    while (attempts < maxAttempts) {
+      const input = await ask(`Attempt ${attempts + 1}/${maxAttempts}: `);
+      const guess = parseInt(input);
+
+      if (isNaN(guess) || guess < 1 || guess > 100) {
+        console.log("Enter a valid number between 1 and 100.\n");
+        continue;
+      }
+
+      attempts++;
+
+      if (guess === secret) {
+        console.log(`\n✅ Correct! You guessed it in ${attempts} attempt(s)!`);
+        rl.close();
+        return;
+      }
+
+      const remaining = maxAttempts - attempts;
+      if (guess < secret) {
+        console.log(`Too low! ${remaining} attempt(s) left.\n`);
+      } else {
+        console.log(`Too high! ${remaining} attempt(s) left.\n`);
+      }
+    }
+
+    console.log(`\n❌ Out of attempts! The number was ${secret}.`);
+    rl.close();
+  }
+
+  game();
